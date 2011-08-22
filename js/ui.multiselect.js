@@ -133,6 +133,7 @@ $.widget("ui.multiselect", {
 		// batch actions
 		this.container.find(".remove-all").click(function() {
 			that._populateLists(that.element.find('option').removeAttr('selected'));
+			that._onSelectedChanged();
 			return false;
 		});
 		
@@ -146,6 +147,7 @@ $.widget("ui.multiselect", {
 				options.attr('selected', 'selected');
 			}
 			that._populateLists(that.element.find('option'));
+			that._onSelectedChanged();
 			return false;
 		});
 	},
@@ -154,6 +156,69 @@ $.widget("ui.multiselect", {
 		this.container.remove();
 
 		$.Widget.prototype.destroy.apply(this, arguments);
+	},
+	refresh: function () {
+		this._populateLists(this.element.find('option'));
+	},
+	setSelected: function (values) {
+		var that = this;
+		this.selectedList.children('li.ui-element:visible').each(function (i, el) {
+			if (that._arrayIndexOf(values, $(el).data("optionLink").val()) < 0
+					&& !that._findItemByValue($(el).data("optionLink").val(), that.availableList)
+					) {
+				that._setSelected($(el), false);
+				that.count -= 1;
+			}
+		});
+
+		this.availableList.children('li.ui-element:visible').each(function (i, el) {
+			if (that._arrayIndexOf(values, $(el).data("optionLink").val()) >= 0
+					&& !that._findItemByValue($(el).data("optionLink").val(), that.selectedList)
+					) {
+				that._setSelected($(el), true);
+				that.count += 1;
+			}
+		});
+		that._updateCount();
+	},
+	_arrayIndexOf: function (array, item) {
+		if (typeof array.indexOf == "function")
+			return array.indexOf(item);
+		for (var i = 0, j = array.length; i < j; i++)
+			if (array[i] === item)
+				return i;
+		return -1;
+	},
+	_findItemByValue: function (value, list) {
+		var found = null;
+		list.children('li.ui-element:visible').each(function (i, el) {
+			el = $(el);
+			if (el.data("optionLink").val() === value) {
+				found = el;
+			}
+		});
+		if (found && found.size()) {
+			return found;
+		} else {
+			return false;
+		}
+	},
+	_findItem: function (text, list) {
+		var found = null;
+		list.children('li.ui-element:visible').each(function (i, el) {
+			el = $(el);
+			if (el.text().toLowerCase() === text.toLowerCase()) {
+				found = el;
+			}
+		});
+		if (found && found.size()) {
+			return found;
+		} else {
+			return false;
+		}
+	},
+	_onSelectedChanged: function() {
+		this._trigger("selectedChanged", null, { item: this.element });
 	},
 	_populateLists: function(options) {
 		this.selectedList.children('.ui-element').remove();
@@ -305,6 +370,7 @@ $.widget("ui.multiselect", {
 		var that = this;
 		elements.click(function() {
 			var item = that._setSelected($(this).parent(), true);
+			that._onSelectedChanged();
 			that.count += 1;
 			that._updateCount();
 			return false;
@@ -331,6 +397,7 @@ $.widget("ui.multiselect", {
 		var that = this;
 		elements.click(function() {
 			that._setSelected($(this).parent(), false);
+			that._onSelectedChanged();
 			that.count -= 1;
 			that._updateCount();
 			return false;
