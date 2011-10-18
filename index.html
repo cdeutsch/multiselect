@@ -1,8 +1,8 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"> 
-<head> 
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/> 
-	<title>jQuery UI Multiselect</title> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>jQuery UI Multiselect</title>
 	<link rel="stylesheet" href="css/common.css" type="text/css" />
 	<link type="text/css" rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.10/themes/ui-lightness/jquery-ui.css" />
 	<link type="text/css" href="css/ui.multiselect.css" rel="stylesheet" />
@@ -14,21 +14,24 @@
 	<script type="text/javascript">
 		$(function(){
 			$.localise('ui-multiselect', {/*language: 'en',*/ path: 'js/locale/'});
-			$(".multiselect").multiselect();
+			$(".multiselect").multiselect({
+                selectedContainerOnRight: false,
+                dividerLocation: 0.4
+            });
 			$('#switcher').themeswitcher();
 		});
 	</script>
 </head>
 <body>
 <a href="http://github.com/michael/multiselect"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_white_ffffff.png" alt="Fork me on GitHub" /></a>
- 
-<div id="wrapper"> 
-	<div id="header"> 
-		<h1>jQuery UI Multiselect</h1> 
+
+<div id="wrapper">
+	<div id="header">
+		<h1>jQuery UI Multiselect</h1>
 		<p>
 		  Another attempt of a <em>sortable</em>, <em>searchable</em> multiple select widget
-		</p> 
-		
+		</p>
+
 		<ul id="nav">
       <li><a href="http://quasipartikel.at/2009/05/10/jqueryui-multiselect/">Blogpost</a></li>
       <li><a href="http://github.com/michael/multiselect">Source</a></li>
@@ -36,14 +39,14 @@
       <li><a href="http://github.com/michael/multiselect/issues">Bugs</a></li>
 		</ul>
 	</div>
-	
+
 	<div id="content">
     <p>
       It depends on <a href="http://jquery.com/">jQuery 1.5</a> and <a href="http://jqueryui.com/">jQuery UI 1.8</a>.
       The widget is styleable using <a href="http://jqueryui.com/themeroller/" title="jQuery UI Themeroller">Themeroller</a>.
       It works in an <em>unobtrusive</em> fashion, by just turning html multiple select inputs into a sexier equivalent. There's no extra markup needed.
     </p>
-    
+
     <ul>
       <li>For installation instructions please have a look at the corresponding <a href="http://www.quasipartikel.at/2009/05/10/jqueryui-multiselect/">blogpost</a></li>
       <li>Source code is available at <a href="http://github.com/michael/multiselect/" title="Social Coding">Github</a></li>
@@ -159,12 +162,12 @@
       <br/>
       <input type="submit" value="Submit Form"/>
     </form>
-    
+
     <script type="text/javascript"
       src="http://jqueryui.com/themeroller/themeswitchertool/">
     </script>
     <div id="switcher"></div>
-    
+
     <h2>Features</h2>
     <ul>
       <li>Search within available options, if there are a lots of them</li>
@@ -172,7 +175,7 @@
       <li>Select All / Deselect All Buttons</li>
       <li>Dragging items from the available list to the selected list directly</li>
     </ul>
-    
+
     <h2>Contributors</h2>
     <ul>
       <li><a href="http://github.com/michael/multiselect/">Michael Aufreiter</a></li>
@@ -191,13 +194,13 @@
       <li><a href="http://substance.io/#michael/data-js">Data.js — Javascript Data Manipulation</a> <small style="color: red;">NEW!</small></li>
       <li><a href="http://quasipartikel.at/donut">DONUT™ - Radial Navigator</a></li>
     </ul>
-	</div> 
- 
-	<div id="footer"> 
+	</div>
+
+	<div id="footer">
 		<p class="left">A <a href="http://quasipartikel.at/">Quasipartikel</a> Production</p>
 		<p class="right">Template adopted from <a href="http://orderedlist.com/demos/fancy-zoom-jquery/">orderedlist.com</a></p>
 		<br class="clear"/>
-	</div> 
+	</div>
 </div>
-</body> 
+</body>
 </html>
