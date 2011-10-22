@@ -37,7 +37,7 @@ $.widget("ui.multiselect", {
 		show: 'slideDown',
 		hide: 'slideUp',
 		dividerLocation: 0.6,
-		selectedContainerOnRight: true,
+		selectedContainerOnLeft: true,
 		width: null,
 		height: null,
 		nodeComparator: function(node1,node2) {
@@ -52,7 +52,7 @@ $.widget("ui.multiselect", {
 		this.container = $('<div class="ui-multiselect ui-helper-clearfix ui-widget"></div>').insertAfter(this.element);
 		this.count = 0; // number of currently selected options
 		this.selectedContainer = $('<div class="selected"></div>');
-		if (this.options.selectedContainerOnRight) {
+		if (this.options.selectedContainerOnLeft) {
 			this.selectedContainer.appendTo(this.container);
 			this.availableContainer = $('<div class="available"></div>').appendTo(this.container);
 			this.availableContainer.addClass('right-column');
@@ -81,7 +81,7 @@ $.widget("ui.multiselect", {
 
 		// set dimensions
 		this.container.width(width-2);
-		if (this.options.selectedContainerOnRight) {
+		if (this.options.selectedContainerOnLeft) {
 			this.selectedContainer.width(Math.floor(width*this.options.dividerLocation)-1);
 			this.availableContainer.width(Math.floor(width*(1-this.options.dividerLocation))-1);
 		}
