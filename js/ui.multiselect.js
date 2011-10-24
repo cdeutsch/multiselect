@@ -184,7 +184,7 @@ $.widget("ui.multiselect", {
 
 		var item = this._getOptionNode(option).appendTo(option.attr('selected') ? this.selectedList : this.availableList).show();
 
-		if (option.selected) {
+		if (option.attr('selected')) {
 			this.count += 1;
 		}
 		this._applyItemState(item, option.attr('selected'));
