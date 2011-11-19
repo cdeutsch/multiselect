@@ -108,7 +108,7 @@ $.widget("ui.multiselect", {
 			this.selectedList.sortable({
 				placeholder: 'ui-state-highlight',
 				axis: 'y',
-				update: function(event, ui) {
+				refresh: function(event, ui) {
 					// apply the new sort order to the original selectbox
 					that.selectedList.find('li').each(function() {
 						if ($(this).data('optionLink'))
@@ -194,6 +194,18 @@ $.widget("ui.multiselect", {
 		this._updateCount();
 		this._filter.apply(this.availableContainer.find('input.search'), [this.availableList]);
 	},
+    // Redisplay the lists of selected/available options.
+    // Call this after you've selected/unselected some options programmatically.
+    // GRIPE This is O(n) where n is the length of the list - seems like
+    // there must be a smarter way of doing this, but I have not been able
+    // to come up with one. I see no way to detect programmatic setting of
+    // the option's selected property, and without that, it seems like we
+    // can't have a general-case listener that does its thing every time an
+    // option is selected.
+    update: function() {
+		// Redisplay our lists.
+		this._populateLists(this.element.find('option'));
+    },
 	_populateLists: function(options) {
 		this.selectedList.children('.ui-element').remove();
 		this.availableList.children('.ui-element').remove();
