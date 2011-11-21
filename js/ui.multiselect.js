@@ -108,7 +108,7 @@ $.widget("ui.multiselect", {
 			this.selectedList.sortable({
 				placeholder: 'ui-state-highlight',
 				axis: 'y',
-				refresh: function(event, ui) {
+				update: function(event, ui) {
 					// apply the new sort order to the original selectbox
 					that.selectedList.find('li').each(function() {
 						if ($(this).data('optionLink'))
@@ -202,7 +202,7 @@ $.widget("ui.multiselect", {
     // the option's selected property, and without that, it seems like we
     // can't have a general-case listener that does its thing every time an
     // option is selected.
-    update: function() {
+    refresh: function() {
 		// Redisplay our lists.
 		this._populateLists(this.element.find('option'));
     },
