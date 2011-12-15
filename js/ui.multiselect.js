@@ -214,8 +214,13 @@ $.widget("ui.multiselect", {
 		this.count = 0;
 
 		var that = this;
+		var groups = $(this.element).find("optgroup").map(function(i) {
+			return that._getOptionGroup($(this));
+		});
+		groups.appendTo(this.selectedList.add(this.availableList));
+		
 		var items = $(options.map(function(i) {
-	      var item = that._getOptionNode(this).appendTo(this.selected ? that.selectedList : that.availableList).show();
+		  var item = that._getOptionNode(this).appendTo(that._getOptionList(this)).show();
 
 			if (this.selected) that.count += 1;
 			that._applyItemState(item, this.selected);
@@ -227,6 +232,26 @@ $.widget("ui.multiselect", {
 		this._updateCount();
 		that._filter.apply(this.availableContainer.find('input.search'), [that.availableList]);
   },
+	_getOptionList: function(option) {
+		var selected = option.selected;
+		option = $(option);
+		var $list = selected ? this.selectedList : this.availableList;
+		var $group = option.closest("optgroup");
+		if ($group.length === 0) {
+			return $list;
+		} else {
+			var $groupList = $list.find("ul[title='" + $group.attr("label") + "']");
+			if ($groupList.length === 0) {
+				$groupList = $("<ul class='ui-state-default ui-element available' title='" + $group.attr("label") + "'>" + $group.attr("label") + "</ul>").appendTo($list);
+			}
+			$groupList.show();
+			return $groupList;
+		}
+	},
+	_getOptionGroup : function(optgroup) {
+		var groupNode = $("<ul class='ui-state-default ui-element available' title='" + optgroup.attr("label") + "'>" + optgroup.attr("label") + "</ul>").hide();
+		return groupNode[0];
+	},
 	_updateCount: function() {
 		this.selectedContainer.find('span.count').text(this.count+" "+$.ui.multiselect.locale.itemsCount);
 	},
@@ -252,8 +277,15 @@ $.widget("ui.multiselect", {
 
 		if (selected) {
 			var selectedItem = this._cloneWithData(item);
-			item[this.options.hide](this.options.animated, function() { $(this).remove(); });
-			selectedItem.appendTo(this.selectedList).hide()[this.options.show](this.options.animated);
+			item[this.options.hide](this.options.animated, function() { 
+				if (item.siblings().length === 0) {
+					item.closest("ul[title]").hide();
+				}
+				$(this).remove(); 
+			});
+			// get group to add it to...
+			var $list = this._getOptionList(selectedItem.data("optionLink")[0]);
+			selectedItem.appendTo($list).hide()[this.options.show](this.options.animated);
 
 			this._applyItemState(selectedItem, true);
 			return selectedItem;
@@ -270,6 +302,13 @@ $.widget("ui.multiselect", {
 					if ( direction != comparator(item, $(items[i])) ) {
 						// going up, go back one item down, otherwise leave as is
 						succ = items[direction > 0 ? i : i+1];
+						var group1 = item.closest("ul[title]"),
+							group2 = $(succ).closest("ul[title]");
+						if (group1.length !== 0 && group2.length !== 0) {
+							if (group1.attr("title") !== group2.attr("title")) {
+								succ = null;
+							}
+						}
 						break;
 					}
 				}
@@ -278,8 +317,14 @@ $.widget("ui.multiselect", {
 			}
 
 			var availableItem = this._cloneWithData(item);
-			succ ? availableItem.insertBefore($(succ)) : availableItem.appendTo(this.availableList);
-			item[this.options.hide](this.options.animated, function() { $(this).remove(); });
+			var $list = this._getOptionList(availableItem.data("optionLink")[0]);
+			succ ? availableItem.insertBefore($(succ)) : availableItem.appendTo($list);
+			item[this.options.hide](this.options.animated, function() { 
+				if (item.siblings().length === 0) {
+					item.closest("ul[title]").hide();
+				}
+				$(this).remove(); 
+			});
 			availableItem.hide()[this.options.show](this.options.animated);
 
 			this._applyItemState(availableItem, false);
@@ -307,7 +352,7 @@ $.widget("ui.multiselect", {
 	// taken from John Resig's liveUpdate script
 	_filter: function(list) {
 		var input = $(this);
-		var rows = list.children('li'),
+		var rows = list.find('li'),
 			cache = rows.map(function(){
 
 				return $(this).text().toLowerCase();
