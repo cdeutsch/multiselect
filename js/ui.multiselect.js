@@ -169,6 +169,8 @@ $.widget("ui.multiselect", {
 			}
 			that._populateLists(that.element.find('option'));
 			that.element.trigger('change');
+            //clear input after add all
+			$('input.search').val("");
 			return false;
 		});
 	},
@@ -444,8 +446,15 @@ $.widget("ui.multiselect", {
 			$(this).removeClass('ui-state-active');
 		})
 		.keypress(function(e) {
-			if (e.keyCode == 13)
-				return false;
+		    if (e.keyCode == 13) {
+		        //on Enter, add all if a filter is present, then clear the input
+		        var str = $('input.search').val();
+		        if (str !== undefined && str !== null && str !== "") {
+		            $('a.add-all').click();
+		            $('input.search').val("");
+		        }
+		        return false;
+		    }
 		})
 		.keyup(function() {
 			that._filter.apply(this, [that.availableList]);
