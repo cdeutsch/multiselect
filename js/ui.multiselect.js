@@ -28,7 +28,7 @@
 (function($) {
 
 $.widget("ui.multiselect", {
-  options: {
+	options: {
 		sortable: true,
 		dragToAdd: true,
 		searchable: true,
@@ -59,9 +59,7 @@ $.widget("ui.multiselect", {
 			this.selectedContainer.appendTo(this.container);
 			this.availableContainer = $('<div class="available"></div>').appendTo(this.container);
 			this.availableContainer.addClass('right-column');
-		}
-		else
-		{
+		} else {
 			this.availableContainer = $('<div class="available"></div>').appendTo(this.container);
 			this.selectedContainer.appendTo(this.container);
 			this.selectedContainer.addClass('right-column');
@@ -87,9 +85,7 @@ $.widget("ui.multiselect", {
 		if (this.options.selectedContainerOnLeft) {
 			this.selectedContainer.width(Math.floor(width*this.options.dividerLocation)-1);
 			this.availableContainer.width(Math.floor(width*(1-this.options.dividerLocation))-2);
-		}
-		else
-		{
+		} else {
 			this.selectedContainer.width(Math.floor(width*this.options.dividerLocation)-2);
 			this.availableContainer.width(Math.floor(width*(1-this.options.dividerLocation))-1);
 		}
@@ -118,30 +114,27 @@ $.widget("ui.multiselect", {
 							$(this).data('optionLink').remove().appendTo(that.element);
 					});
 				},
-				beforeStop: function (event, ui) {
-					// This lets us recognize which item was just added to
-					// the list in receive, per the workaround for not being
-					// able to reference the new element.
-					ui.item.addClass('dropped');
-				},
 				receive: function(event, ui) {
+					var draggedItem = that.selectedList.children('.ui-draggable');
+
+					// set selected attribute on linked option element
 					ui.item.data('optionLink').attr('selected', true);
-					// increment count
+
+					// set item data, classes, and events
+					draggedItem.data({
+						'optionLink': ui.item.data('optionLink'),
+						'idx': ui.item.data('idx')
+					}).removeClass('ui-draggable');
+					that._applyItemState(draggedItem, true);
+
+					// update count
 					that.count += 1;
 					that._updateCount();
-					// workaround, because there's no way to reference
-					// the new element, see http://dev.jqueryui.com/ticket/4303
-					that.selectedList.children('.dropped').each(function() {
-						$(this).removeClass('dropped');
-						$(this).data('optionLink', ui.item.data('optionLink'));
-						$(this).data('idx', ui.item.data('idx'));
-						that._applyItemState($(this), true);
-					});
 
-					// workaround according to http://dev.jqueryui.com/ticket/4088
+					// 1 ms workaround according to http://dev.jqueryui.com/ticket/4088
 					setTimeout(function() { ui.item.remove(); }, 1);
 				},
-				stop: function (event, ui) { that.element.change(); }
+				stop: function(event, ui) { that.element.change(); }
 			});
 		}
 
@@ -171,10 +164,10 @@ $.widget("ui.multiselect", {
 			that._populateLists(that.element.find('option'));
 			that.element.trigger('change');
 			if (that.options.pressEnterKeyToAddAll) {
-                    //clear input after add all
-                    $('input.search').val("");
-                }
-			
+				//clear input after add all
+				$('input.search').val("");
+			}
+
 			return false;
 		});
 	},
@@ -202,18 +195,18 @@ $.widget("ui.multiselect", {
 		this._updateCount();
 		this._filter.apply(this.availableContainer.find('input.search'), [this.availableList]);
 	},
-    // Redisplay the lists of selected/available options.
-    // Call this after you've selected/unselected some options programmatically.
-    // GRIPE This is O(n) where n is the length of the list - seems like
-    // there must be a smarter way of doing this, but I have not been able
-    // to come up with one. I see no way to detect programmatic setting of
-    // the option's selected property, and without that, it seems like we
-    // can't have a general-case listener that does its thing every time an
-    // option is selected.
-    refresh: function() {
+	// Redisplay the lists of selected/available options.
+	// Call this after you've selected/unselected some options programmatically.
+	// GRIPE This is O(n) where n is the length of the list - seems like
+	// there must be a smarter way of doing this, but I have not been able
+	// to come up with one. I see no way to detect programmatic setting of
+	// the option's selected property, and without that, it seems like we
+	// can't have a general-case listener that does its thing every time an
+	// option is selected.
+	refresh: function() {
 		// Redisplay our lists.
 		this._populateLists(this.element.find('option'));
-    },
+	},
 	_populateLists: function(options) {
 		this.selectedList.children('.ui-element').remove();
 		this.availableList.children('.ui-element').remove();
@@ -224,20 +217,20 @@ $.widget("ui.multiselect", {
 			return that._getOptionGroup($(this));
 		});
 		groups.appendTo(this.selectedList.add(this.availableList));
-		
+
 		var items = $(options.map(function(i) {
-		  var item = that._getOptionNode(this).appendTo(that._getOptionList(this)).show();
+			var item = that._getOptionNode(this).appendTo(that._getOptionList(this)).show();
 
 			if (this.selected) that.count += 1;
 			that._applyItemState(item, this.selected);
 			item.data('idx', i);
 			return item[0];
-    }));
+		}));
 
 		// update count
 		this._updateCount();
 		that._filter.apply(this.availableContainer.find('input.search'), [that.availableList]);
-  },
+	},
 	_getOptionList: function(option) {
 		var selected = option.selected;
 		option = $(option);
@@ -283,11 +276,11 @@ $.widget("ui.multiselect", {
 
 		if (selected) {
 			var selectedItem = this._cloneWithData(item);
-			item[this.options.hide](this.options.animated, function() { 
+			item[this.options.hide](this.options.animated, function() {
 				if (item.siblings().length === 0) {
 					item.closest("ul[title]").hide();
 				}
-				$(this).remove(); 
+				$(this).remove();
 			});
 			// get group to add it to...
 			var $list = this._getOptionList(selectedItem.data("optionLink")[0]);
@@ -309,7 +302,7 @@ $.widget("ui.multiselect", {
 						// going up, go back one item down, otherwise leave as is
 						succ = items[direction > 0 ? i : i+1];
 						var group1 = item.closest("ul[title]"),
-							group2 = $(succ).closest("ul[title]");
+						    group2 = $(succ).closest("ul[title]");
 						if (group1.length !== 0 && group2.length !== 0) {
 							if (group1.attr("title") !== group2.attr("title")) {
 								succ = null;
@@ -325,11 +318,11 @@ $.widget("ui.multiselect", {
 			var availableItem = this._cloneWithData(item);
 			var $list = this._getOptionList(availableItem.data("optionLink")[0]);
 			succ ? availableItem.insertBefore($(succ)) : availableItem.appendTo($list);
-			item[this.options.hide](this.options.animated, function() { 
+			item[this.options.hide](this.options.animated, function() {
 				if (item.siblings().length === 0) {
 					item.closest("ul[title]").hide();
 				}
-				$(this).remove(); 
+				$(this).remove();
 			});
 			availableItem.hide()[this.options.show](this.options.animated);
 
@@ -398,7 +391,7 @@ $.widget("ui.multiselect", {
 	_registerAddEvents: function(elements) {
 		var that = this;
 		elements.click(function() {
-			var item = that._setSelected($(this).parent(), true);
+			var item = that._setSelected($(this).parent().removeClass('ui-draggable'), true);
 			that.count += 1;
 			that._updateCount();
 
@@ -411,19 +404,19 @@ $.widget("ui.multiselect", {
 
 		// make draggable
 		if (this.options.sortable && this.options.dragToAdd) {
-  		elements.each(function() {
-  			$(this).parent().draggable({
-  	      connectToSortable: that.selectedList,
-  				helper: function() {
-  					var selectedItem = that._cloneWithData($(this)).width($(this).width() - 50);
-  					selectedItem.width($(this).width());
-  					return selectedItem;
-  				},
-  				appendTo: that.container,
-  				containment: that.container,
-  				revert: 'invalid'
-  	    });
-  		});
+			elements.each(function() {
+				$(this).parent().draggable({
+					connectToSortable: that.selectedList,
+					helper: function() {
+						var selectedItem = that._cloneWithData($(this)).width($(this).width() - 50);
+						selectedItem.width($(this).width());
+						return selectedItem;
+					},
+					appendTo: that.container,
+					containment: that.container,
+					revert: 'invalid'
+				});
+			});
 		}
 	},
 	_registerRemoveEvents: function(elements) {
@@ -439,7 +432,7 @@ $.widget("ui.multiselect", {
 
 			return false;
 		});
- 	},
+	},
 	_registerSearchEvents: function(input) {
 		var that = this;
 
@@ -452,13 +445,13 @@ $.widget("ui.multiselect", {
 		.keypress(function(e) {
 			if (e.keyCode == 13) {
 				if (that.options.pressEnterKeyToAddAll) {
-		            //on Enter, if a filter is present add all, then clear the input
-		            var str = $('input.search').val();
-		            if (str !== undefined && str !== null && str !== "") {
-		                $('a.add-all').click();
-		                $('input.search').val("");
-		            }
-		        }
+					//on Enter, if a filter is present add all, then clear the input
+					var str = $('input.search').val();
+					if (str !== undefined && str !== null && str !== "") {
+						$('a.add-all').click();
+						$('input.search').val("");
+					}
+				}
 				return false;
 			}
 		})
