@@ -283,7 +283,7 @@ $.widget("ui.multiselect", {
 				$(this).remove();
 			});
 			// get group to add it to...
-			var $list = this._getOptionList(selectedItem.data("optionLink")[0]);
+			var $list = $('ul.selected');
 			selectedItem.appendTo($list).hide()[this.options.show](this.options.animated);
 
 			this._applyItemState(selectedItem, true);
